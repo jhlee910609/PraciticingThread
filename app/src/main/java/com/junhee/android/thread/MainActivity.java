@@ -1,5 +1,6 @@
 package com.junhee.android.thread;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,16 +15,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView mainText, backText;
     Button increase;
     BackThread thread;
+    Button looperTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        looperTest = (Button) findViewById(R.id.looper);
         mainText = (TextView) findViewById(R.id.mainvalue);
         backText = (TextView) findViewById(R.id.backvalue);
         increase = (Button) findViewById(R.id.increase);
+
         increase.setOnClickListener(this);
+        looperTest.setOnClickListener(this);
 
         thread = new BackThread(handler);
         thread.setDaemon(true);
@@ -35,10 +40,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        mainValue++;
-        mainText.setText("mainValue : " + mainValue);
-        // 아래 주석을 풀었을 때, 클릭 시에만 잠깐 해당 문구가 뜸
-        // backText.setText("Basdfjklsajdfkl");
+        switch (v.getId()) {
+            case R.id.increase:
+                mainValue++;
+                mainText.setText("mainValue : " + mainValue);
+                // 아래 주석을 풀었을 때, 클릭 시에만 잠깐 해당 문구가 뜸
+                // backText.setText("Basdfjklsajdfkl");
+                break;
+
+            case R.id.looper:
+                Intent intent = new Intent(v.getContext(), LooperTest.class);
+                startActivity(intent);
+                break;
+        }
     }
 
     Handler handler = new Handler() {
@@ -53,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 class BackThread extends Thread {
     int backValue = 0;
     Handler handler;
+
     // 생성자를 통해 handler를 넘겨 받는다.
     BackThread(Handler handler) {
         this.handler = handler;
